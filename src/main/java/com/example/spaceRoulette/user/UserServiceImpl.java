@@ -5,13 +5,17 @@ import com.example.spaceRoulette.user.interfaces.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     @Autowired
@@ -55,4 +59,13 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        Optional<User> userDetail = userRepository.findByUsername(username);
+
+        // Converting userDetail to UserDetails
+        return userDetail.map(User::new)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
+    }
 }

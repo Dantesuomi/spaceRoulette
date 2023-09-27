@@ -1,7 +1,7 @@
 package com.example.spaceRoulette.trip;
 
 import com.example.spaceRoulette.enums.ShipType;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Model of Ship")
+@Schema(description = "Model of Ship")
 @Entity
 public class Ship {
     @Id

@@ -10,4 +10,5 @@ public interface UserService {
 
     boolean isValidEmail (String email);
     User registerUser(UserDto userDto);
+    User loadUserByUsername(String username);
 }

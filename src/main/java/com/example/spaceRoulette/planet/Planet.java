@@ -4,7 +4,7 @@ import com.example.spaceRoulette.enums.StarSystem;
 import com.example.spaceRoulette.user.User;
 import com.example.spaceRoulette.enums.Atmosphere;
 import com.example.spaceRoulette.enums.Sector;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Model of Planet")
+@Schema(description = "Model of Planet")
 @Entity
 public class Planet {
     @Id

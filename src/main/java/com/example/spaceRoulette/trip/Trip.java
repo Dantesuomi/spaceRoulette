@@ -3,7 +3,7 @@ package com.example.spaceRoulette.trip;
 import com.example.spaceRoulette.enums.TripResult;
 import com.example.spaceRoulette.planet.Planet;
 import com.example.spaceRoulette.user.User;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +20,7 @@ import java.sql.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Model of Trip")
+@Schema(description = "Model of Trip")
 @Entity
 public class Trip {
 

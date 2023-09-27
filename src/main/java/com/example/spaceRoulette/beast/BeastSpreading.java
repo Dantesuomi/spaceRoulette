@@ -1,7 +1,7 @@
 package com.example.spaceRoulette.beast;
 
 import com.example.spaceRoulette.planet.Planet;
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Model of Beast Spreading")
+@Schema(description = "Model of Beast Spreading")
 @Entity
 public class BeastSpreading {
     @Id
