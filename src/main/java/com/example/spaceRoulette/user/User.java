@@ -1,23 +1,30 @@
 package com.example.spaceRoulette.user;
 
 import com.example.spaceRoulette.planet.Planet;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Min;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -39,19 +46,18 @@ public class User implements UserDetails {
     private String email;
 
     @Column(unique = true)
+    @JsonIgnore
     private String password;
 
     @Column(unique = true)
     private String username;
 
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     //private String nameOfProfilePhoto;
-
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "homePlanet_id")
     private Planet homePlanet;
-
-    private Integer planets_visited;
 
     private String role;
 
@@ -62,8 +68,14 @@ public class User implements UserDetails {
 
 
     public User(User user) {
-        username = user.getUsername();
+        id = user.getId();
+        email = user.getEmail();
         password = user.getPassword();
+        username = user.getUsername();
+        dateOfBirth = user.getDateOfBirth();
+        homePlanet = user.getHomePlanet();
+        createdAt = user.getCreatedAt();
+        role = user.getRole();
         authorities = Arrays.stream(user.getRole().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());

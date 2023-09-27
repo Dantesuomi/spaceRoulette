@@ -1,6 +1,8 @@
 package com.example.spaceRoulette.user;
 
 import com.example.spaceRoulette.user.interfaces.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -10,8 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,19 +40,7 @@ public class UserController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("/hello")
-    public String helloWorld() {
-        log.error("Hello world");
-        return "Hello world";
-    }
-
-    @GetMapping("/user/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
-    }
-
-    @PostMapping("/generateToken")
+    @PostMapping("/login")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
@@ -55,6 +48,12 @@ public class UserController {
         } else {
             throw new UsernameNotFoundException("invalid user request !");
         }
+    }
+
+    @GetMapping("/hello")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public String helloWorld(@AuthenticationPrincipal User user) {
+        return "Hello world " + user.getUsername();
     }
 
     @PostMapping("/register")
@@ -84,5 +83,32 @@ public class UserController {
         }
     }
 
+    @GetMapping("/userProfile")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public String userProfile() {
+        return "Welcome to User Profile";
+    }
 
+    @PutMapping
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @ApiOperation(value = "Update logged in user",
+            notes = "Update logged in user" ,
+            response = User.class)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description  = "The request has succeeded"),
+            @ApiResponse(responseCode = "400", description  = "The server has a Bad Request and cannot process the invalid request"),
+            @ApiResponse(responseCode = "404", description  = "The server has not found anything matching the Request-URL"),
+            @ApiResponse(responseCode = "500", description  = "Server error")})
+    public ResponseEntity<User> updateUserUsingId
+            (@AuthenticationPrincipal User user,
+             @Valid @RequestBody UserProfileDto userProfileDto) {
+        Long userId = user.getId();
+        if (!userService.doesUserExistById(userId)) {
+            log.warn("No users with id {}", userId);
+            throw new IllegalArgumentException("No users with id " + userId);
+        }
+        User updatedUser = userService.updateUser(userId, userProfileDto);
+        log.info("User with id {} is updated.", userId);
+        return ResponseEntity.ok(updatedUser);
+    }
 }

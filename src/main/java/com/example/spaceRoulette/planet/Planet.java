@@ -1,7 +1,6 @@
 package com.example.spaceRoulette.planet;
 
 import com.example.spaceRoulette.enums.StarSystem;
-import com.example.spaceRoulette.user.User;
 import com.example.spaceRoulette.enums.Atmosphere;
 import com.example.spaceRoulette.enums.Sector;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,15 +9,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Model of Planet")
@@ -35,8 +33,10 @@ public class Planet {
 
     private Sector sector;
 
+    @Column(name = "star_system")
     private StarSystem starSystem;
 
+    @Column(name = "mid_temperature")
     private Double midTemperature;
 
     private Atmosphere atmosphere;
@@ -45,10 +45,4 @@ public class Planet {
     private String description;
 
     private Boolean inhabitable;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-
 }

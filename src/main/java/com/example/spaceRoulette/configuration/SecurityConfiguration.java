@@ -21,43 +21,35 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.security.config.http.MatcherType.mvc;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
 
     @Autowired
     private JwtAuthFilter authFilter;
 
-    // User Creation
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserServiceImpl();
     }
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {;
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(antMatcher("/my-servlet/*")).hasRole("USER")
-                        .requestMatchers("/spring-mvc-controller/**").hasRole("USER")
-                        .anyRequest().permitAll()
-                        .requestMatchers("api/user/hello").hasRole("USER")
-                        .requestMatchers("api/user/register").anonymous())
-
-                        .authenticationProvider(authenticationProvider())
-                        .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                        .sessionManagement((sessionManagement) -> sessionManagement
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement((sessionManagement) -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                                 .sessionConcurrency((sessionConcurrency) ->
                                         sessionConcurrency
                                                 .maximumSessions(1)
                                                 .expiredUrl("/login?expired")
-                                ));
+                                )
+
+        );
 
         return http.build();
     }
