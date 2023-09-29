@@ -1,8 +1,9 @@
 package com.example.spaceRoulette.user;
 
 import com.example.spaceRoulette.user.interfaces.UserService;
+import com.example.spaceRoulette.user.jwt.AuthRequest;
+import com.example.spaceRoulette.user.jwt.JwtService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -84,13 +84,12 @@ public class UserController {
     }
 
     @GetMapping("/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     public String userProfile() {
         return "Welcome to User Profile";
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('ROLE_USER')")
     @ApiOperation(value = "Update logged in user",
             notes = "Update logged in user" ,
             response = User.class)

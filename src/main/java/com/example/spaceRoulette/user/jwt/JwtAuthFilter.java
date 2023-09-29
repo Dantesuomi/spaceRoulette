@@ -1,5 +1,6 @@
-package com.example.spaceRoulette.user;
+package com.example.spaceRoulette.user.jwt;
 
+import com.example.spaceRoulette.user.User;
 import com.example.spaceRoulette.user.interfaces.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

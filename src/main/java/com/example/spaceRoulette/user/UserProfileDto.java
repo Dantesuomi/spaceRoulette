@@ -11,7 +11,6 @@ import java.time.LocalDate;
 public class UserProfileDto {
 
     private LocalDate dateOfBirth;
-
     private Long planetId;
 
 }

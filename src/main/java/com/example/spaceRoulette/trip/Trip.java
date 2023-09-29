@@ -2,6 +2,7 @@ package com.example.spaceRoulette.trip;
 
 import com.example.spaceRoulette.enums.TripResult;
 import com.example.spaceRoulette.planet.Planet;
+import com.example.spaceRoulette.ship.Ship;
 import com.example.spaceRoulette.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
@@ -15,7 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -33,7 +34,7 @@ public class Trip {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Date departure_Date;
+    private LocalDate departure_Date;
 
     @ManyToOne
     @JoinColumn(name = "ship_id")

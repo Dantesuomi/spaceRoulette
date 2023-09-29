@@ -1,4 +1,4 @@
-package com.example.spaceRoulette.trip;
+package com.example.spaceRoulette.ship;
 
 import com.example.spaceRoulette.enums.ShipType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,18 +17,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(description = "Model of Ship")
 @Entity
-public class Ship {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Min(value = 1, message = "Id must be bigger than 0")
-    private Long id;
+    public class Ship {
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        @Min(value = 1, message = "Id must be bigger than 0")
+        private Long id;
 
-    private ShipType shipType;
+        private ShipType shipType;
 
-    private String name;
+        private String name;
 
-    private Double maxDistance;
+        private Double maxDistance;
 
-    @Column(columnDefinition="TEXT")
-    private String description;
-}
+        @Column(columnDefinition="TEXT")
+        private String description;
+    }

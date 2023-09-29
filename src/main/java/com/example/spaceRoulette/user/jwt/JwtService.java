@@ -1,4 +1,4 @@
-package com.example.spaceRoulette.user;
+package com.example.spaceRoulette.user.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
