@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -89,7 +90,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Planet homePlanet = planetRepository.findById(homePlanetId)
                 .orElseThrow(() -> new ResourceNotFoundException("Planet not found with ID: " + homePlanetId));
 
-        updatedUser.setDateOfBirth(profileDto.getDateOfBirth());
+        LocalDate updatedDateOfBirth = profileDto.getDateOfBirth();
+        if (updatedDateOfBirth.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Date of birth cannot be in the future.");
+        }
+        updatedUser.setDateOfBirth(updatedDateOfBirth);
+
+
         updatedUser.setHomePlanet(homePlanet);
         userRepository.save(updatedUser);
 
