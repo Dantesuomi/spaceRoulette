@@ -1,6 +1,8 @@
 package com.example.spaceRoulette.ship;
 
 
+import com.example.spaceRoulette.ship.interfaces.ShipRepository;
+import com.example.spaceRoulette.ship.interfaces.ShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

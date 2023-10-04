@@ -1,6 +1,7 @@
-package com.example.spaceRoulette.ship;
+package com.example.spaceRoulette.ship.interfaces;
 
 
+import com.example.spaceRoulette.ship.Ship;
 import com.example.spaceRoulette.trip.Trip;
 import org.springframework.stereotype.Service;
 

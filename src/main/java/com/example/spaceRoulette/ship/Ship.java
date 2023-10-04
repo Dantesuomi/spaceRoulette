@@ -1,6 +1,6 @@
 package com.example.spaceRoulette.ship;
 
-import com.example.spaceRoulette.enums.ShipType;
+import com.example.spaceRoulette.ship.enums.ShipType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

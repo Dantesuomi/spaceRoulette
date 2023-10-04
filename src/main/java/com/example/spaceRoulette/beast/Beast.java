@@ -1,6 +1,6 @@
 package com.example.spaceRoulette.beast;
 
-import com.example.spaceRoulette.enums.Habitat;
+import com.example.spaceRoulette.planet.enums.Habitat;
 import com.example.spaceRoulette.planet.Planet;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;

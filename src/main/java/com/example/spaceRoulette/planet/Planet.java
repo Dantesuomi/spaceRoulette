@@ -1,8 +1,8 @@
 package com.example.spaceRoulette.planet;
 
-import com.example.spaceRoulette.enums.StarSystem;
-import com.example.spaceRoulette.enums.Atmosphere;
-import com.example.spaceRoulette.enums.Sector;
+import com.example.spaceRoulette.planet.enums.StarSystem;
+import com.example.spaceRoulette.planet.enums.Atmosphere;
+import com.example.spaceRoulette.planet.enums.Sector;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

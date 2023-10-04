@@ -1,9 +1,9 @@
 package com.example.spaceRoulette.trip;
 
-import com.example.spaceRoulette.enums.TripResult;
+import com.example.spaceRoulette.trip.enums.TripResult;
 import com.example.spaceRoulette.planet.Planet;
 import com.example.spaceRoulette.planet.interfaces.PlanetService;
-import com.example.spaceRoulette.ship.ShipService;
+import com.example.spaceRoulette.ship.interfaces.ShipService;
 import com.example.spaceRoulette.trip.interfaces.TripRepository;
 import com.example.spaceRoulette.trip.interfaces.TripService;
 import com.example.spaceRoulette.ship.Ship;

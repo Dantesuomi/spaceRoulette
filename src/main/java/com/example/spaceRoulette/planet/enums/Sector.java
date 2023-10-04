@@ -1,4 +1,4 @@
-package com.example.spaceRoulette.enums;
+package com.example.spaceRoulette.planet.enums;
 
 public enum Sector {
     ORION,
