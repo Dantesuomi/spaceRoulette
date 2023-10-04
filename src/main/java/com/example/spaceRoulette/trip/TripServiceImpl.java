@@ -12,6 +12,7 @@ import com.example.spaceRoulette.user.interfaces.UserRepository;
 import com.example.spaceRoulette.user.interfaces.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +24,19 @@ public class TripServiceImpl implements TripService {
 
     private static final Logger log = LoggerFactory.getLogger(TripController.class);
 
+    @Autowired
     private ShipService shipService;
 
+    @Autowired
     private UserService userService;
 
+    @Autowired
     private UserRepository userRepository;
 
+    @Autowired
     private PlanetService planetService;
 
+    @Autowired
     private TripRepository tripRepository;
 
     private TripResult tripResult;
@@ -50,23 +56,25 @@ public class TripServiceImpl implements TripService {
 
         Optional<Ship> ship = shipService.getShipById(tripDto.getShipId());
         if (ship.isEmpty()) {
-            throw new ResourceNotFoundException("Ship not found");
+            throw new ResourceNotFoundException("Ship not found with id: " + tripDto.getShipId());
         }
         Ship chosenShip = ship.get();
         trip.setShip(chosenShip);
 
         Optional<Planet> planet = planetService.getPlanetById(tripDto.getPlanetId());
         if (planet.isEmpty()) {
-            throw new ResourceNotFoundException("Planet not found");
+            throw new ResourceNotFoundException("Planet not found with id " + tripDto.getPlanetId());
         }
         Planet chosenPlanet = planet.get();
         trip.setPlanet(chosenPlanet);
 
-        canShipTravelThisDistance(chosenShip, chosenPlanet);
+        if (!canShipTravelThisDistance(chosenShip, chosenPlanet)){
+            throw new IllegalArgumentException("Mismatch between required trip distance and ship max distance, choose another ship or planet");
+        }
 
-        LocalDate dateOfTrip = tripDto.getDeparture_Date();
-        validateDeparture_Date(dateOfTrip);
-        trip.setDeparture_Date(dateOfTrip);
+        LocalDate dateOfTrip = tripDto.getDepartureDate();
+        validateDepartureDate(dateOfTrip);
+        trip.setDepartureDate(dateOfTrip);
 
         updateTripResult(trip, chosenPlanet);
 
@@ -76,27 +84,26 @@ public class TripServiceImpl implements TripService {
     private void updateTripResult(Trip trip, Planet chosenPlanet) {
         if (!chosenPlanet.getInhabitable()){
             trip.setTripResult(TripResult.UNSUCCESSFUL_TRIP);
-            log.info("Trip was unsuccessful");
+            log.info("Trip with id {} was unsuccessful", trip.getId());
         }else {
             trip.setTripResult(TripResult.SUCCESSFUL_TRIP);
-            log.info("Trip was successful");
+            log.info("Trip with id {} was successful", trip.getId());
         }
     }
 
-    private void canShipTravelThisDistance(Ship chosenShip, Planet chosenPlanet){
+    private boolean canShipTravelThisDistance(Ship chosenShip, Planet chosenPlanet){
         if(chosenShip.getMaxDistance()<chosenPlanet.getDistance()){
             log.info("Mismatch between required trip distance and ship max distance");
-            throw new IllegalArgumentException("Mismatch between required trip distance and ship max distance");
+            return false;
         }
-
+        return true;
     }
 
-    public void validateDeparture_Date(LocalDate departure_Date) {
+    public void validateDepartureDate(LocalDate departure_Date) {
         LocalDate currentDate = LocalDate.now();
         if (departure_Date.isBefore(currentDate)) {
             throw new IllegalArgumentException("Departure date cannot be in the past");
         }
     }
-
 
 }

@@ -60,7 +60,7 @@ public class UserController {
     @Operation(summary = "Saves user by passing in valid username, email and password",
             description = "Saves user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description  = "The request has succeeded"),
+            @ApiResponse(responseCode = "201", description  = "The user was created"),
             @ApiResponse(responseCode = "400", description  = "The server has a Bad Request and cannot process the invalid request"),
             @ApiResponse(responseCode = "404", description  = "The server has not found anything matching the Request-URL"),
             @ApiResponse(responseCode = "500", description  = "Server error")})
@@ -77,7 +77,7 @@ public class UserController {
         try {
             User savedUser = userService.registerUser(userDto);
             log.info("User registered successfully");
-            return ResponseEntity.ok(savedUser);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

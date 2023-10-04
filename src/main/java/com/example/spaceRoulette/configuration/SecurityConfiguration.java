@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.PUT, "/api/user").hasRole("USER")
                                 .requestMatchers("api/user/userProfile").hasRole("USER") //works fine
                                 .requestMatchers("api/trip/performTrip").hasRole("USER")
+                                .requestMatchers(HttpMethod.GET, "/api/planet/getPlanetInfo/{planetId}").hasRole("USER")
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 )
                 .sessionManagement((sessionManagement) -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

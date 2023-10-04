@@ -34,7 +34,7 @@ public class Trip {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDate departure_Date;
+    private LocalDate departureDate;
 
     @ManyToOne
     @JoinColumn(name = "ship_id")

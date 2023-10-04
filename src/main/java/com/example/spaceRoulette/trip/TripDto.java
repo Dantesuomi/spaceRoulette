@@ -1,6 +1,5 @@
 package com.example.spaceRoulette.trip;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,20 +13,16 @@ import java.time.LocalDate;
 public class TripDto {
 
     @NotNull
-    @NotEmpty
     private Long userId;
 
     @NotNull
-    @NotEmpty
     private Long shipId;
 
     @NotNull
-    @NotEmpty
     private Long planetId;
 
     @NotNull
-    @NotEmpty
-    private LocalDate departure_Date;
+    private LocalDate departureDate;
 
 
 }
