@@ -44,7 +44,6 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
 
-    @Cacheable(cacheNames = "cache1", key = "#authRequest.username")
     @PostMapping("/login")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
@@ -57,8 +56,9 @@ public class UserController {
     }
 
     @GetMapping("/hello")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public String helloWorld(@AuthenticationPrincipal User user) {
+    @Cacheable(cacheNames = "cache1", key = "#user.username")
+    public String helloWorld(@AuthenticationPrincipal User user) throws InterruptedException {
+        Thread.sleep(1000);
         return "Hello world " + user.getUsername();
     }
 
