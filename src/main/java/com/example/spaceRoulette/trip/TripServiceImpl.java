@@ -7,6 +7,7 @@ import com.example.spaceRoulette.ship.interfaces.ShipService;
 import com.example.spaceRoulette.trip.interfaces.TripRepository;
 import com.example.spaceRoulette.trip.interfaces.TripService;
 import com.example.spaceRoulette.ship.Ship;
+import com.example.spaceRoulette.trip.kafka.TripEvent;
 import com.example.spaceRoulette.user.User;
 import com.example.spaceRoulette.user.interfaces.UserRepository;
 import com.example.spaceRoulette.user.interfaces.UserService;
@@ -14,15 +15,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TripServiceImpl implements TripService {
 
-    private static final Logger log = LoggerFactory.getLogger(TripController.class);
+    private static final Logger log = LoggerFactory.getLogger(TripService.class);
 
     @Autowired
     private ShipService shipService;
@@ -41,9 +44,12 @@ public class TripServiceImpl implements TripService {
 
     private TripResult tripResult;
 
+    @Autowired
+    private KafkaTemplate<String, TripEvent> kafkaTemplate;
 
 
-    public Trip performTrip(TripDto tripDto){
+
+    public Long performTrip(TripDto tripDto){
 
         Trip trip = new Trip();
 
@@ -76,19 +82,11 @@ public class TripServiceImpl implements TripService {
         validateDepartureDate(dateOfTrip);
         trip.setDepartureDate(dateOfTrip);
 
-        updateTripResult(trip, chosenPlanet);
+        //TODO
+        trip.setId(UUID.randomUUID().getMostSignificantBits());
+        kafkaTemplate.send("trip-events", new TripEvent(trip, "created"));
 
-        return tripRepository.save(trip);
-    }
-
-    private void updateTripResult(Trip trip, Planet chosenPlanet) {
-        if (!chosenPlanet.getInhabitable()){
-            trip.setTripResult(TripResult.UNSUCCESSFUL_TRIP);
-            log.info("Trip with id {} was unsuccessful", trip.getId());
-        }else {
-            trip.setTripResult(TripResult.SUCCESSFUL_TRIP);
-            log.info("Trip with id {} was successful", trip.getId());
-        }
+        return trip.getId();
     }
 
     private boolean canShipTravelThisDistance(Ship chosenShip, Planet chosenPlanet){

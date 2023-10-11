@@ -15,10 +15,6 @@ import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer
 @Configuration
 @EnableCaching
 public class RedisConfiguration {
-//    @Bean
-//    JedisConnectionFactory jedisConnectionFactory() {
-//        return new JedisConnectionFactory();
-//    }
 
     @Bean
     public LettuceConnectionFactory connectionFactory(){

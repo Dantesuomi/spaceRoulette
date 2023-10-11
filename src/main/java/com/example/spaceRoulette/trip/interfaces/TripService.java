@@ -7,6 +7,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface TripService {
 
-    Trip performTrip(TripDto tripDto);
+    Long performTrip(TripDto tripDto);
 
 }

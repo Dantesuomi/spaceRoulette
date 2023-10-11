@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers("api/user/login").permitAll()
-                                .requestMatchers("api/user/register").anonymous()
+                                .requestMatchers("api/user/register").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/api/user").hasRole("USER")
                                 .requestMatchers(HttpMethod.GET, "/api/user/hello").hasRole("USER")
                                 .requestMatchers("api/user/userProfile").hasRole("USER") //works fine
