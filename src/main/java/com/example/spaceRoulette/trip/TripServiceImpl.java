@@ -9,6 +9,7 @@ import com.example.spaceRoulette.trip.interfaces.TripService;
 import com.example.spaceRoulette.ship.Ship;
 import com.example.spaceRoulette.trip.kafka.TripEvent;
 import com.example.spaceRoulette.user.User;
+import com.example.spaceRoulette.user.UserServiceImpl;
 import com.example.spaceRoulette.user.interfaces.UserRepository;
 import com.example.spaceRoulette.user.interfaces.UserService;
 import org.slf4j.Logger;
@@ -75,18 +76,22 @@ public class TripServiceImpl implements TripService {
         trip.setPlanet(chosenPlanet);
 
         if (!canShipTravelThisDistance(chosenShip, chosenPlanet)){
-            throw new IllegalArgumentException("Mismatch between required trip distance and ship max distance, choose another ship or planet");
+            throw new IllegalArgumentException("Mismatch between required trip distance and ship travelling max distance, choose another ship or planet");
         }
 
         LocalDate dateOfTrip = tripDto.getDepartureDate();
         validateDepartureDate(dateOfTrip);
         trip.setDepartureDate(dateOfTrip);
 
-        //TODO
         trip.setId(UUID.randomUUID().getMostSignificantBits());
         kafkaTemplate.send("trip-events", new TripEvent(trip, "created"));
 
         return trip.getId();
+    }
+
+    @Override
+    public Optional<Trip> getTripById(Long tripId) {
+        return tripRepository.findById(tripId);
     }
 
     private boolean canShipTravelThisDistance(Ship chosenShip, Planet chosenPlanet){
@@ -97,7 +102,7 @@ public class TripServiceImpl implements TripService {
         return true;
     }
 
-    public void validateDepartureDate(LocalDate departure_Date) {
+    private void validateDepartureDate(LocalDate departure_Date) {
         LocalDate currentDate = LocalDate.now();
         if (departure_Date.isBefore(currentDate)) {
             throw new IllegalArgumentException("Departure date cannot be in the past");

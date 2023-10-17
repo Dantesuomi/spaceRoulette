@@ -41,9 +41,10 @@ public class PlanetController {
     ) {
         try{
             Planet chosenPlanet = planetService.getPlanetInfoById(planetId);
-            log.info("Getting info for chosen planet");
+            log.info("Getting info for chosen planet with id " + planetId);
             return ResponseEntity.ok(chosenPlanet);
         }catch (Exception e) {
+            log.info("Unable to get info for chosen planet with id " + planetId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }

@@ -45,10 +45,12 @@ public class SecurityConfiguration {
                                 .requestMatchers("api/user/register").permitAll()
                                 .requestMatchers(HttpMethod.PUT, "/api/user").hasRole("USER")
                                 .requestMatchers(HttpMethod.GET, "/api/user/hello").hasRole("USER")
-                                .requestMatchers("api/user/userProfile").hasRole("USER") //works fine
+                                .requestMatchers("api/user/userProfile").hasRole("USER")
                                 .requestMatchers("api/trip/performTrip").hasRole("USER")
+                                .requestMatchers(HttpMethod.GET, "api/trip/{tripId}").hasRole("USER")
                                 .requestMatchers(HttpMethod.GET, "/api/planet/getPlanetInfo/{planetId}").hasRole("USER")
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
                 )
                 .sessionManagement((sessionManagement) -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
