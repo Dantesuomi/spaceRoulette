@@ -48,8 +48,12 @@ public class SecurityConfiguration {
                                 .requestMatchers("api/user/userProfile").hasRole("USER")
                                 .requestMatchers("api/trip/performTrip").hasRole("USER")
                                 .requestMatchers(HttpMethod.GET, "api/trip/{tripId}").hasRole("USER")
+                                .requestMatchers(HttpMethod.GET,"/").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/planet/getPlanetInfo/{planetId}").hasRole("USER")
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/index.html").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/my-page").permitAll()
+
 
                 )
                 .sessionManagement((sessionManagement) -> sessionManagement

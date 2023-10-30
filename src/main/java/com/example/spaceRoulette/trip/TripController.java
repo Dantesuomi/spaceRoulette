@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,6 +79,8 @@ public class TripController {
         }
     }
 
+
+    @Cacheable(cacheNames = "trips", key = "#trip.tripId")
     @GetMapping("/{tripId}")
     @ApiOperation(value = "Get information about the trip by given id",
             notes = "Get trip information",
