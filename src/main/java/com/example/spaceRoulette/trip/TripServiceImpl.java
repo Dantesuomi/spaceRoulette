@@ -20,6 +20,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -92,6 +93,10 @@ public class TripServiceImpl implements TripService {
     @Override
     public Optional<Trip> getTripById(Long tripId) {
         return tripRepository.findById(tripId);
+    }
+
+    public List<Trip> getAllTripsByUserId(Long userId){
+        return tripRepository.findAllTripsByUserId(userId);
     }
 
     private boolean canShipTravelThisDistance(Ship chosenShip, Planet chosenPlanet){

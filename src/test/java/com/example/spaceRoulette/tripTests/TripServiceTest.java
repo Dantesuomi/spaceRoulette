@@ -60,22 +60,28 @@ import static org.mockito.Mockito.when;
     TripDto tripDto = new TripDto(1L, 2L, 2L, LocalDate.of(2030, 1, 1));
     TripDto invalidDateTripDto = new TripDto(1L, 2L, 2L, LocalDate.now().minusDays(1));
 
-    Ship ship = new Ship(1L, ShipType.CARGO_SHIP, "Cargo Ship 1", 1000.0, "Very big ship");
+    Ship ship = new Ship(2L, ShipType.CARGO_SHIP, "Cargo Ship 1", 1000.0, "Very big ship");
 
-    Planet planet = new Planet(1L, 42.0, "Earth", Sector.NEXUS, StarSystem.AURORA_SKYE, 15.0, Atmosphere.ICE_GIANT, "The third planet from the Sun.", true);
-
+    Planet planet = new Planet(2L, 42.0, "Earth", Sector.NEXUS, StarSystem.AURORA_SKYE, 15.0, Atmosphere.ICE_GIANT, "The third planet from the Sun.", true);
 
     @Test
     public void testPerformTrip() {
 
-        User user = new User();
-        //when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        Ship ship = new Ship();
-        Planet planet = new Planet();
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setEmail("pepega@pepega.lv");
+
+
+        when(userRepository.findById(tripDto.getUserId())).thenReturn(Optional.of(mockUser));
+        when(shipService.getShipById(tripDto.getShipId())).thenReturn(Optional.of(ship));
+        when(planetService.getPlanetById(tripDto.getPlanetId())).thenReturn(Optional.of(planet));
+
         Long tripId = tripService.performTrip(tripDto);
 
         assertNotNull(tripId);
-        //verify(kafkaTemplate, times(1)).send(eq("trip-events"), any(TripEvent.class));
+        assertEquals(tripDto.getUserId(), mockUser.getId());
+        assertEquals(tripDto.getShipId(), ship.getId());
+        assertEquals(tripDto.getPlanetId(), planet.getId());
     }
 
     @Test

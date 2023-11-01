@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -79,8 +81,11 @@ public class TripController {
         }
     }
 
+    @Cacheable(cacheNames = "trips", key = "#tripId")
+    public Trip getTripByIdCached(Long tripId) {
+        return tripservice.getTripById(tripId).orElse(null);
+    }
 
-    @Cacheable(cacheNames = "trips", key = "#trip.tripId")
     @GetMapping("/{tripId}")
     @ApiOperation(value = "Get information about the trip by given id",
             notes = "Get trip information",
@@ -95,16 +100,51 @@ public class TripController {
             @PathVariable Long tripId
     ) {
         try{
-            Optional<Trip> trip = tripservice.getTripById(tripId);
-            if (trip.isEmpty()) {
+            Trip trip = getTripByIdCached(tripId);
+            if (trip == null) {
                 throw new ResourceNotFoundException("Trip not found with id: " + tripId);
             }
-            Trip tripForInfo = trip.get();
             log.info("Getting info for trip with id " + tripId);
-            return ResponseEntity.ok(tripForInfo);
+            return ResponseEntity.ok(trip);
         }catch (Exception e) {
             log.info("Unable to get trip info for given id");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @GetMapping("trips/{userId}")
+    @ApiOperation(value = "Get all trips information by given user id",
+            notes = "Get all trips information",
+            response = Trip.class)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The request has succeeded"),
+            @ApiResponse(responseCode = "400", description = "The server has a Bad Request and cannot process the invalid request"),
+            @ApiResponse(responseCode = "404", description = "The server has not found anything matching the Request-URL"),
+            @ApiResponse(responseCode = "500", description = "Server error")})
+    public ResponseEntity<List<Trip>> getAllTrips(@AuthenticationPrincipal User user,
+                                  @PathVariable Long userId) {
+        try {
+            if (userId == null) {
+                throw new ResourceNotFoundException("User ID cannot be null");
+            }
+
+            // Check if the logged-in user has the same userId as the requested userId
+            if (!user.getId().equals(userId)) {
+                throw new ResourceNotFoundException("You are not authorized to access this user's trips.");
+            }
+
+            List<Trip> trips = tripservice.getAllTripsByUserId(userId);
+            if (trips.isEmpty()) {
+                throw new ResourceNotFoundException("No trips found for user with ID: " + userId);
+            }
+            log.info("Getting trips info for user with id " + userId);
+            return ResponseEntity.ok(trips);
+        } catch (ResourceNotFoundException e) {
+            log.info(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            log.error("Unable to get trip info for the given id", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

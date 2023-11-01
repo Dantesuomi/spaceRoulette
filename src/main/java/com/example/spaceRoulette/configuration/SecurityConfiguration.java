@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "api/trip/{tripId}").hasRole("USER")
                                 .requestMatchers(HttpMethod.GET,"/").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/planet/getPlanetInfo/{planetId}").hasRole("USER")
+                                .requestMatchers(HttpMethod.GET, "api/trip/trips/{userId}").hasRole("USER")
                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/index.html").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/my-page").permitAll()
