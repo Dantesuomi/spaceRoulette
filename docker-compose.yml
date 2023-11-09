@@ -1,9 +1,10 @@
 version: '3'
 services:
   redis:
-    image: redis
+    image: redis/redis-stack
     ports:
       - 6379:6379
+    restart: unless-stopped
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest

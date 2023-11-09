@@ -1,8 +1,8 @@
 package com.example.spaceRoulette.trip;
 
-import com.example.spaceRoulette.trip.enums.TripResult;
 import com.example.spaceRoulette.planet.Planet;
 import com.example.spaceRoulette.ship.Ship;
+import com.example.spaceRoulette.trip.enums.TripResult;
 import com.example.spaceRoulette.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
@@ -49,6 +49,5 @@ public class Trip {
     private Planet homePlanet;
 
     private TripResult tripResult;
-
 
 }

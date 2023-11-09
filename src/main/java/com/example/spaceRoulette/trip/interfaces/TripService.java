@@ -1,6 +1,5 @@
 package com.example.spaceRoulette.trip.interfaces;
 
-import com.example.spaceRoulette.ship.Ship;
 import com.example.spaceRoulette.trip.Trip;
 import com.example.spaceRoulette.trip.TripDto;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,12 @@ public interface TripService {
 
     Long performTrip(TripDto tripDto);
 
-    Optional<Trip> getTripById(Long tripId);
+    //Optional<Trip> getTripById(Long tripId);
 
     List<Trip> getAllTripsByUserId (Long userId);
+
+    String getTripByIdCached(Long tripId);
+
+    Trip convertJsonToTrip(String json);
 
 }

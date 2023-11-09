@@ -9,12 +9,14 @@ import com.example.spaceRoulette.trip.interfaces.TripService;
 import com.example.spaceRoulette.ship.Ship;
 import com.example.spaceRoulette.trip.kafka.TripEvent;
 import com.example.spaceRoulette.user.User;
-import com.example.spaceRoulette.user.UserServiceImpl;
 import com.example.spaceRoulette.user.interfaces.UserRepository;
 import com.example.spaceRoulette.user.interfaces.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class TripServiceImpl implements TripService {
@@ -49,7 +50,8 @@ public class TripServiceImpl implements TripService {
     @Autowired
     private KafkaTemplate<String, TripEvent> kafkaTemplate;
 
-
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public Long performTrip(TripDto tripDto){
 
@@ -83,16 +85,36 @@ public class TripServiceImpl implements TripService {
         LocalDate dateOfTrip = tripDto.getDepartureDate();
         validateDepartureDate(dateOfTrip);
         trip.setDepartureDate(dateOfTrip);
+        Trip savedTrip = tripRepository.save(trip);
 
-        trip.setId(UUID.randomUUID().getMostSignificantBits());
-        kafkaTemplate.send("trip-events", new TripEvent(trip, "created"));
+        Long tripId = savedTrip.getId();
 
-        return trip.getId();
+        kafkaTemplate.send("trip-events", new TripEvent(savedTrip, "created"));
+
+        return tripId;
     }
 
     @Override
-    public Optional<Trip> getTripById(Long tripId) {
-        return tripRepository.findById(tripId);
+    @Cacheable(cacheNames = "trips", key = "#tripId")
+    public String getTripByIdCached(Long tripId) {
+        Optional<Trip> tripOptional = tripRepository.findById(tripId);
+        if (tripOptional.isPresent()) {
+            try {
+                return objectMapper.writeValueAsString(tripOptional.get());
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public Trip convertJsonToTrip(String json) {
+        try {
+            return objectMapper.readValue(json, Trip.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Trip> getAllTripsByUserId(Long userId){
@@ -113,5 +135,4 @@ public class TripServiceImpl implements TripService {
             throw new IllegalArgumentException("Departure date cannot be in the past");
         }
     }
-
 }

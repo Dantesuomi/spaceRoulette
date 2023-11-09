@@ -81,11 +81,6 @@ public class TripController {
         }
     }
 
-    @Cacheable(cacheNames = "trips", key = "#tripId")
-    public Trip getTripByIdCached(Long tripId) {
-        return tripservice.getTripById(tripId).orElse(null);
-    }
-
     @GetMapping("/{tripId}")
     @ApiOperation(value = "Get information about the trip by given id",
             notes = "Get trip information",
@@ -99,15 +94,18 @@ public class TripController {
             @AuthenticationPrincipal User user,
             @PathVariable Long tripId
     ) {
-        try{
-            Trip trip = getTripByIdCached(tripId);
-            if (trip == null) {
+        try {
+            String cachedTripJson = tripservice.getTripByIdCached(tripId);
+            if (cachedTripJson == null) {
                 throw new ResourceNotFoundException("Trip not found with id: " + tripId);
             }
             log.info("Getting info for trip with id " + tripId);
+
+            Trip trip = tripservice.convertJsonToTrip(cachedTripJson);
+
             return ResponseEntity.ok(trip);
-        }catch (Exception e) {
-            log.info("Unable to get trip info for given id");
+        } catch (Exception e) {
+            log.info("Unable to get trip info for given id " + tripId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
@@ -128,7 +126,6 @@ public class TripController {
                 throw new ResourceNotFoundException("User ID cannot be null");
             }
 
-            // Check if the logged-in user has the same userId as the requested userId
             if (!user.getId().equals(userId)) {
                 throw new ResourceNotFoundException("You are not authorized to access this user's trips.");
             }

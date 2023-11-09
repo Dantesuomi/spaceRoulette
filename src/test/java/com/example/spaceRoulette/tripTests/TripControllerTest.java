@@ -52,7 +52,7 @@ public class TripControllerTest {
     public void testGetTripInfoSuccess() {
 
         Trip mockTrip = new Trip();
-        Mockito.when(tripService.getTripById(tripId)).thenReturn(Optional.of(mockTrip));
+        Mockito.when(tripService.getTripByIdCached(tripId));
 
         ResponseEntity<Trip> response = tripController.getTripInfo(null, tripId);
 
@@ -61,7 +61,7 @@ public class TripControllerTest {
 
     @Test
     public void testGetTrip_TripNotFound() {
-        Mockito.when(tripService.getTripById(tripId)).thenReturn(Optional.empty());
+        Mockito.when(tripService.getTripByIdCached(tripId)).thenReturn(null);
 
         ResponseEntity<Trip> response = tripController.getTripInfo(null, tripId);
 
